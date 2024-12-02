@@ -8,9 +8,9 @@ import Typography from "@mui/material/Typography";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { Stack } from "@mui/material";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../../context/authContext";
+import { login } from "../../services/Api";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -60,8 +60,6 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
-  const { loginFn } = useContext(AuthContext);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -93,66 +91,27 @@ const Login = () => {
     return isValid;
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!validateInputs()) {
-  //     return; // Stop if inputs are invalid
-  //   }
-
-  //   const userData = { email, password };
-  //   try {
-  //     const response = await loginFn(userData);
-  //     if (response.status === 201) {
-  //       navigate("/book-list");
-  //       localStorage.setItem("token", response?.data?.token);
-  //       alert("User Login Successfully");
-  //       setEmail("");
-  //       setPassword("");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  //   setEmail("");
-  //   setPassword("");
-  // };
-
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page reload on form submission
+    e.preventDefault();
 
-    // Validate input fields
     if (!validateInputs()) {
       return; // Stop if inputs are invalid
     }
 
     const userData = { email, password };
-
     try {
-      // Call the login function
-      const response = await loginFn(userData);
-
-      // Check the response status and handle the result
-      if (response.status === 201) {
-        // Store token in localStorage
-        localStorage.setItem("token", response?.data?.token);
-
-        // Navigate to the /book-list page after successful login
-        navigate("/book-list");
-
-        // Show success alert
-        alert("User Login Successfully");
-
-        // Clear input fields
-        setEmail("");
-        setPassword("");
-      } else {
-        // Handle invalid login attempt, if status is not 201
-        alert("Login failed. Please check your credentials.");
-      }
+      const response = await login(userData);
+      navigate("/book-list");
+      localStorage.setItem("token", response?.data?.token);
+      alert("User Login Successfully");
+      setEmail("");
+      setPassword("");
     } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred during login. Please try again.");
+      console.error("Error:", error.response.data.message);
+      alert(error?.response?.data?.message);
     }
+    setEmail("");
+    setPassword("");
   };
 
   return (
