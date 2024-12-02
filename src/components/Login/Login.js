@@ -8,9 +8,9 @@ import Typography from "@mui/material/Typography";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import { Stack } from "@mui/material";
-import { useState,useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AuthContext from '../../context/authContext';
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../../context/authContext";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -60,16 +60,15 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
-  const { loginFn } = useContext(AuthContext); 
+  const { loginFn } = useContext(AuthContext);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate(); 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const validateInputs = () => {
-    const email = document.getElementById("email")
-    const password = document.getElementById("password")
-   
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
 
     let isValid = true;
 
@@ -94,31 +93,70 @@ const Login = () => {
     return isValid;
   };
 
-  const handleSubmit = async(e) => {
-    e.preventDefault()
-  
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!validateInputs()) {
+  //     return; // Stop if inputs are invalid
+  //   }
+
+  //   const userData = { email, password };
+  //   try {
+  //     const response = await loginFn(userData);
+  //     if (response.status === 201) {
+  //       navigate("/book-list");
+  //       localStorage.setItem("token", response?.data?.token);
+  //       alert("User Login Successfully");
+  //       setEmail("");
+  //       setPassword("");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  //   setEmail("");
+  //   setPassword("");
+  // };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent page reload on form submission
+
+    // Validate input fields
     if (!validateInputs()) {
       return; // Stop if inputs are invalid
     }
 
-    const userData = {email,password}
+    const userData = { email, password };
+
     try {
-      const response = await loginFn(userData)
-      if (response.status === 201) { // Assuming 201 Created for successful addition
-        navigate('/book-list'); // Redirect to the book list page
+      // Call the login function
+      const response = await loginFn(userData);
+
+      // Check the response status and handle the result
+      if (response.status === 201) {
+        // Store token in localStorage
         localStorage.setItem("token", response?.data?.token);
-        alert("User Login Successfully")
-        setEmail('');
-        setPassword('');
+
+        // Navigate to the /book-list page after successful login
+        navigate("/book-list");
+
+        // Show success alert
+        alert("User Login Successfully");
+
+        // Clear input fields
+        setEmail("");
+        setPassword("");
+      } else {
+        // Handle invalid login attempt, if status is not 201
+        alert("Login failed. Please check your credentials.");
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
+      alert("An error occurred during login. Please try again.");
     }
-    setEmail('')
-    setPassword('')
   };
+
   return (
-    <>
+    <div className="container mt-5">
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           {/* <SitemarkIcon /> */}
@@ -150,7 +188,7 @@ const Login = () => {
                 helperText={emailErrorMessage}
                 color={passwordError ? "error" : "primary"}
                 value={email}
-                onChange={(e)=>setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </FormControl>
             <FormControl>
@@ -170,15 +208,11 @@ const Login = () => {
                 helperText={passwordErrorMessage}
                 color={passwordError ? "error" : "primary"}
                 value={password}
-                onChange={(e)=>setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-            >
+            <Button type="submit" fullWidth variant="contained">
               Login In
             </Button>
 
@@ -186,14 +220,14 @@ const Login = () => {
               type="submit"
               fullWidth
               variant="text"
-              onClick={()=> navigate('/register') }
+              onClick={() => navigate("/register")}
             >
-             Click to Register
+              Click to Register
             </Button>
           </Box>
         </Card>
       </SignUpContainer>
-    </>
+    </div>
   );
 };
 

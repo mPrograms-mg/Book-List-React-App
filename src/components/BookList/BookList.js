@@ -1,16 +1,8 @@
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { useState,useEffect } from 'react';
-import { fetchBooks } from '../../services/Api'
-
+import { useState, useEffect } from "react";
+import { fetchBooks } from "../../services/Api";
+import Navbar from "../Navbar/Navbar";
 
 export default function BookTable() {
-
   const [books, setBooks] = useState([]);
 
   // Fetch books from API
@@ -22,30 +14,29 @@ export default function BookTable() {
     getBooks();
   }, []);
 
-
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Title</TableCell>
-            <TableCell align="right">Author</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {books.map((row) => (
-            <TableRow key={row._id} 
-            sx={{'&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.title}
-              </TableCell>
-              <TableCell align="right">{row.author}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <Navbar />
+      <div className="container mt-4">
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Title</th>
+              <th scope="col">Author</th>
+            </tr>
+          </thead>
+          <tbody>
+            {books.map((row, id) => (
+              <tr key={id}>
+                <td>{id + 1}</td>
+                <td>{row.title}</td>
+                <td>{row.author}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
-

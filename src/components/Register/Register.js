@@ -8,10 +8,10 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import { useState,useContext } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 // import { register } from '../../services/Api'
-import AuthContext from '../../context/authContext';
+import AuthContext from "../../context/authContext";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -56,19 +56,18 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp() {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
-  const { registerFn } = useContext(AuthContext); 
+  const { registerFn } = useContext(AuthContext);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const validateInputs = () => {
-    
     const email = document.getElementById("email");
     const password = document.getElementById("password");
     let isValid = true;
@@ -96,31 +95,31 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateInputs()) {
       return; // Stop if inputs are invalid
     }
 
-    const userData = {email,password };
+    const userData = { email, password };
     try {
-      const response = await registerFn(userData)
-      if (response.status === 201) { // Assuming 201 Created for successful addition
-        navigate('/book-list'); // Redirect to the book list page
+      const response = await registerFn(userData);
+      if (response.status === 201) {
         localStorage.setItem("token", response?.data?.token);
-        alert("User Register Successfully")
-        setEmail('');
-        setPassword('');
+        alert("User Register Successfully");
+        setEmail("");
+        setPassword("");
       }
+      navigate("/book-list");
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
-    
-    setEmail('')
-    setPassword('')
+
+    setEmail("");
+    setPassword("");
   };
 
   return (
-    <>
+    <div className="container mt-5">
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
@@ -151,7 +150,7 @@ export default function SignUp() {
                 helperText={emailErrorMessage}
                 color={passwordError ? "error" : "primary"}
                 value={email}
-                onChange={(e)=> setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </FormControl>
             <FormControl>
@@ -171,15 +170,11 @@ export default function SignUp() {
                 helperText={passwordErrorMessage}
                 color={passwordError ? "error" : "primary"}
                 value={password}
-                onChange={(e)=> setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-            >
+            <Button type="submit" fullWidth variant="contained">
               Register
             </Button>
 
@@ -187,14 +182,14 @@ export default function SignUp() {
               type="submit"
               fullWidth
               variant="text"
-              onClick={()=> navigate('/login') }
+              onClick={() => navigate("/login")}
             >
               Already Registered Click to Login
             </Button>
           </Box>
         </Card>
       </SignUpContainer>
-    </>
+    </div>
     // </AppTheme>
   );
 }
