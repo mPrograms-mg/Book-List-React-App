@@ -22,7 +22,6 @@ npm run start
 
 - Live API URL
 
-```
-https://practical-book-list-app.netlify.app
+- Live URL
 
-```
+https://practical-book-list-app.netlify.app/
